@@ -1,0 +1,23 @@
+{
+  "name": "todo-yml",
+  "version": "0.1.0",
+  "description": "A CLI tool for managing todo.yml files",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbaughman/todo-yml.git"
+  },
+  "keywords": [
+    "todo.txt",
+    "todo.yml"
+  ],
+  "author": "Henry Baughman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hbaughman/todo-yml/issues"
+  },
+  "homepage": "https://github.com/hbaughman/todo-yml#readme"
+}
