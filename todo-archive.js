@@ -10,21 +10,27 @@ program
   .option("-k, --keep", "Keep empty projects and/or contexts")
   .parse(process.argv)
 
-let [todoPath, donePath = `${path.dirname(todoPath)}/done.yml`] = program.args
+const [todoPath, donePath = `${path.dirname(todoPath)}/done.yml`] = program.args
+const { keep } = program
 
 Promise.all([
   fsp.readFile(todoPath, "utf-8"),
   fsp.readFile(donePath, "utf-8").catch(err =>
     console.log("error with donePath", err
   )),
-]).then(files => {
-  const json = files.map(yaml.safeLoad)
-  console.log("json: ", json)
+]).then(([todo, done]) => {
+  todo = onlyCompleted(todo)
+  console.log("todo: ", yaml.safeLoad(todo))
+  console.log("done: ", done)
+  // const json = files.map(yaml.safeLoad)
+  // console.log("json: ", json)
 }).catch(err => {
   console.error(`Could not read ${todoPath}`)
   throw err
 })
 
-// console.log("program.keep: ", program.keep)
-// console.log("program.args: ", program.args)
-
+function onlyCompleted(yaml) {
+  const activeTodo = /^\s+-[^\n]+$\n?/
+  const completedSymbol = /#( -)?/
+  yaml.replace(activeTodo, "").replace(completedSymbol, "-")
+}
