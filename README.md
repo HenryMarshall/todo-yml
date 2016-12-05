@@ -147,7 +147,7 @@ around with [this online converter](http://yaml-online-parser.appspot.com/)
 which makes the syntax quite clear. Alternatively, check out the [official yaml
 docs](http://yaml.org/spec/1.2/spec.html) on their site.
 
-One easy error to make is that, a list can contain sub lists **or** todos, but
+One easy error to make is that a list can contain sub lists **or** todos, but
 not both. The following is **invalid** YAML, because `PVC pipe` is a todo, but
 `Painting` is a list:
 

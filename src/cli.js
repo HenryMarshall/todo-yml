@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 
 const program = require("commander")
 
@@ -14,3 +13,5 @@ program
   // .command("filter", "filter by todo, project, or context").alias("f")
   // .command("grep", "grep by todo, project, or context").alias("g")
   .parse(process.argv)
+
+console.log("program: ", program)
