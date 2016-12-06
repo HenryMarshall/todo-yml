@@ -21,7 +21,7 @@ function completed(todos) {
       return null
     }
     else {
-      return yaml.safeDump(todosJson)
+      return todosJson
     }
   }
 }
