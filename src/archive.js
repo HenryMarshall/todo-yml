@@ -3,19 +3,7 @@ const yaml = require("js-yaml")
 const completed = require("./completed")
 const removeNulls = require("./removeNulls")
 
-function merge(a, b) {
-  if (R.isNil(a)) {
-    return b
-  }
-  else if (R.isNil(b)) {
-    return a
-  }
-  else {
-    return R.mergeWith(R.concat, a, b)
-  }
-}
-
-function archive({ activeYaml, archivedYaml }) {
+const archive = R.curry((merge, activeYaml, archivedYaml) => {
   const archivedJson = yaml.safeLoad(archivedYaml)
   const completedJson = completed(activeYaml)
   const uncompletedYaml = R.pipe(
@@ -34,6 +22,6 @@ function archive({ activeYaml, archivedYaml }) {
   const newArchivedJson = merge(archivedJson, completedJson)
   const newArchivedYaml = yaml.safeDump(newArchivedJson)
   return { activeYaml: uncompletedYaml, archivedYaml: newArchivedYaml }
-}
+})
 
 module.exports = archive
