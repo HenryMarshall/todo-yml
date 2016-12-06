@@ -1,20 +1,22 @@
 const R = require("ramda")
 const yaml = require("./utility/yaml")
+const merge = require("./merge")
 const completed = require("./completed")
 const removeNulls = require("./removeNulls")
 
-const archive = R.curry((merge, activeYaml, archivedYaml) => {
-  const archivedJson = yaml.safeLoad(archivedYaml)
-  const completedJson = completed(activeYaml)
-  const uncompletedYaml = R.pipe(
+const archive = R.curry((activeYaml, archivedYaml) => ({
+  activeYaml: R.pipe(
     yaml.safeLoad,
     removeNulls,
     yaml.safeDump
-  )(activeYaml)
+  )(activeYaml),
 
-  const newArchivedJson = merge(archivedJson, completedJson)
-  const newArchivedYaml = yaml.safeDump(newArchivedJson)
-  return { activeYaml: uncompletedYaml, archivedYaml: newArchivedYaml }
-})
+  archivedYaml: yaml.safeDump(
+    merge(
+      yaml.safeLoad(archivedYaml),
+      completed(activeYaml)
+    )
+  ),
+}))
 
 module.exports = archive
