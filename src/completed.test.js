@@ -20,3 +20,9 @@ hardwareStore:
 
   t.is(completed(input), expected)
 })
+
+test("should return null if nothing is completed", t => {
+  t.is(completed(""), null)
+  t.is(completed("- milk"), null)
+  t.is(completed("groceryStore:\n  - milk"), null)
+})

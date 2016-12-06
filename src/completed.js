@@ -8,11 +8,32 @@ const removeNulls = require("./removeNulls")
 const removeUncompleted = R.replace(/^\s*-.+[^:]$/mg, "")
 const uncommentLeaf = R.replace(regex.completed, "$1- ")
 
-module.exports = R.pipe(
-  removeUncompleted,
-  uncommentLeaf,
-  yaml.safeLoad,
-  removeNulls,
-  yaml.safeDump
-)
+// TODO: Implement with folktale
+function completed(todos) {
+  const completedYaml = R.pipe(removeUncompleted, uncommentLeaf)(todos)
+  const isOnlyWhitespace = R.pipe(R.trim, R.empty)
+  if (isOnlyWhitespace(completedYaml)) {
+    return null
+  }
+  else {
+    const todosJson = R.pipe(yaml.safeLoad, removeNulls)(completedYaml)
+    if (R.either(R.isEmpty, R.isNil)(todosJson)) {
+      return null
+    }
+    else {
+      return yaml.safeDump(todosJson)
+    }
+  }
+}
+
+// // The happy path...
+// R.pipe(
+//   removeUncompleted,
+//   uncommentLeaf,
+//   yaml.safeLoad,
+//   removeNulls,
+//   yaml.safeDump
+// )
+
+module.exports = completed
 
