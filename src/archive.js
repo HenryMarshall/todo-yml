@@ -11,7 +11,7 @@ function merge(a, b) {
     return a
   }
   else {
-    return Object.assign({}, a, b)
+    return R.mergeWith(R.concat, a, b)
   }
 }
 
