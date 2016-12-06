@@ -18,8 +18,8 @@ hardwareStore:
   t.deepEqual(completed(input), expected)
 })
 
-test("should return null if nothing is completed", t => {
-  t.is(completed(""), null)
-  t.is(completed("- milk"), null)
-  t.is(completed("groceryStore:\n  - milk"), null)
+test("should return an empty object if nothing is completed", t => {
+  t.deepEqual(completed(""), {})
+  t.deepEqual(completed("- milk"), {})
+  t.deepEqual(completed("groceryStore:\n  - milk"), {})
 })
