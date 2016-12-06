@@ -1,5 +1,5 @@
 const R = require("ramda")
-const yaml = require("js-yaml")
+const yaml = require("./utility/yaml")
 const completed = require("./completed")
 const removeNulls = require("./removeNulls")
 
@@ -9,14 +9,7 @@ const archive = R.curry((merge, activeYaml, archivedYaml) => {
   const uncompletedYaml = R.pipe(
     yaml.safeLoad,
     removeNulls,
-    yaml.safeDump,
-    // When yaml.safeDump is passed `{}` it treats it as a string literal, and
-    // return `{}\n`. It still seems like the nicest yaml library because of
-    // its sorting capabilities when performing safeDump.
-    R.when(
-      R.equals("{}\n"),
-      R.always("\n")
-    )
+    yaml.safeDump
   )(activeYaml)
 
   const newArchivedJson = merge(archivedJson, completedJson)
