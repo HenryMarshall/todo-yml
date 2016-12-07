@@ -15,6 +15,13 @@ test("should copy completed if archive is empty", t => {
   t.deepEqual(newArchived, completed)
 })
 
+test("should copy completed simple list if archive is empty", t => {
+  const completed = ["bananas", "apples"]
+  const archived = {}
+  const newArchived = merge(archived, completed)
+  t.deepEqual(newArchived, completed)
+})
+
 test("should move todos from hitherto unseen projects", t => {
   const newArchived = merge(
     { groceryStore: ["bananas"] },
@@ -53,3 +60,4 @@ test("should handle unnested arrays by concatenation", t => {
   )
   t.deepEqual(newArchived, ["bananas", "apples", "milk", "eggs"])
 })
+
