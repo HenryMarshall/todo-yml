@@ -14,4 +14,4 @@ program
   // .command("grep", "grep by todo, project, or context").alias("g")
   .parse(process.argv)
 
-console.log("program: ", program)
+

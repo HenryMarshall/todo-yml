@@ -5,6 +5,7 @@ const program = require("commander")
 const fsp = require("fs-promise")
 const path = require("path")
 const yaml = require("js-yaml")
+const EOL = require("os").EOL
 
 program
   .option("-k, --keep", "Keep empty projects and/or contexts")
@@ -19,18 +20,15 @@ Promise.all([
     console.log("error with donePath", err
   )),
 ]).then(([todo, done]) => {
-  todo = onlyCompleted(todo)
-  console.log("todo: ", yaml.safeLoad(todo))
-  console.log("done: ", done)
+  const completedTodos = yaml.safeLoad(onlyCompleted(todo))
+  const archivedTodos = done ? yaml.safeLoad(done) : {}
+
+  console.log("completedTodos: ", completedTodos)
+  console.log("archivedTodos: ", archivedTodos)
+  // console.log("done: ", done)
   // const json = files.map(yaml.safeLoad)
   // console.log("json: ", json)
 }).catch(err => {
   console.error(`Could not read ${todoPath}`)
   throw err
 })
-
-function onlyCompleted(yaml) {
-  const activeTodo = /^\s+-[^\n]+$\n?/
-  const completedSymbol = /#( -)?/
-  yaml.replace(activeTodo, "").replace(completedSymbol, "-")
-}
