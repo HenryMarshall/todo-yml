@@ -8,7 +8,9 @@ function merge(a, b) {
     return a
   }
   else {
-    return R.mergeWith(R.concat, a, b)
+    return R.type(a) === "Array" ?
+      R.concat(a, b) :
+      R.mergeWith(R.concat, a, b)
   }
 }
 

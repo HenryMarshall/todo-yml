@@ -45,3 +45,11 @@ test("should throw if mixing todos and keys", t => {
   const completedObj = { groceryStore: { parfait: "bananas" } }
   t.throws(merge.bind(null, archivedArr, completedObj), TypeError)
 })
+
+test("should handle unnested arrays by concatenation", t => {
+  const newArchived = merge(
+    ["bananas", "apples"],
+    ["milk", "eggs"]
+  )
+  t.deepEqual(newArchived, ["bananas", "apples", "milk", "eggs"])
+})

@@ -21,3 +21,10 @@ test("should remove deep nulls", t => {
 test("should do nothing if given an empty object", t => {
   t.deepEqual(removeNulls({}), {})
 })
+
+test("should return an array if given an array", t => {
+  const input = ["feed cat", null, undefined, "bake cake"]
+  const output = ["feed cat", "bake cake"]
+  t.true(Array.isArray(removeNulls(input)))
+  t.deepEqual(removeNulls(input), output)
+})
