@@ -43,6 +43,29 @@ test("should concat completed todos from the same project", t => {
   t.deepEqual(newArchived, expectedArchived)
 })
 
+test("should handle unnested arrays by concatenation", t => {
+  const newArchived = merge(
+    ["bananas", "apples"],
+    ["milk", "eggs"]
+  )
+  t.deepEqual(newArchived, ["bananas", "apples", "milk", "eggs"])
+})
+
+
+// Thou shalt not mix shallow and nested
+
+test("should throw if merging object into array", t => {
+  const completed = { nested: "object" }
+  const archived = ["some", "simple", "list"]
+  t.throws(() => merge(archived, completed))
+})
+
+test("should throw if merging array into object", t => {
+  const completed = ["some", "simple", "list"]
+  const archived = { nested: "object" }
+  t.throws(() => merge(archived, completed))
+})
+
 test("should throw if mixing todos and keys", t => {
   const archivedObj = { groceryStore: { cookies: "sugar" } }
   const completedArr = { groceryStore: ["bananas"] }
@@ -51,13 +74,5 @@ test("should throw if mixing todos and keys", t => {
   const archivedArr = { groceryStore: ["sugar"] }
   const completedObj = { groceryStore: { parfait: "bananas" } }
   t.throws(merge.bind(null, archivedArr, completedObj), TypeError)
-})
-
-test("should handle unnested arrays by concatenation", t => {
-  const newArchived = merge(
-    ["bananas", "apples"],
-    ["milk", "eggs"]
-  )
-  t.deepEqual(newArchived, ["bananas", "apples", "milk", "eggs"])
 })
 

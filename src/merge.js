@@ -8,9 +8,18 @@ function merge(a, b) {
     return a
   }
   else {
-    return R.type(a) === "Array" && R.type(b) === "Array" ?
-      R.concat(a, b) :
-      R.mergeWith(R.concat, a, b)
+    const aType = R.type(a)
+    const bType = R.type(b)
+
+    if (aType === "Array" && bType === "Array") {
+      return R.concat(a, b)
+    }
+    else if (aType === "Object" && bType === "Object") {
+      return R.mergeWith(R.concat, a, b)
+    }
+    else {
+      throw new TypeError("Cannot merge shallow and nested lists together")
+    }
   }
 }
 
