@@ -1,34 +1,43 @@
 #!/usr/bin/env node
-"use strict";
 
+const R = require("ramda")
 const program = require("commander")
 const fsp = require("fs-promise")
 const path = require("path")
-const yaml = require("js-yaml")
-const EOL = require("os").EOL
 
-program
-  .option("-k, --keep", "Keep empty projects and/or contexts")
-  .parse(process.argv)
+const newActive = require("../newActive")
+const newArchive = require("../newArchive")
 
-const [todoPath, donePath = `${path.dirname(todoPath)}/done.yml`] = program.args
-const { keep } = program
+program.parse(process.argv)
+
+const [
+  activePath = "./todo.yml",
+  archivePath = `${path.dirname(activePath)}/${path.basename(activePath, "todo.yml")}done.yml`,
+] = program.args
 
 Promise.all([
-  fsp.readFile(todoPath, "utf-8"),
-  fsp.readFile(donePath, "utf-8").catch(err =>
-    console.log("error with donePath", err
-  )),
-]).then(([todo, done]) => {
-  const completedTodos = yaml.safeLoad(onlyCompleted(todo))
-  const archivedTodos = done ? yaml.safeLoad(done) : {}
+  fsp.readFile(activePath, "utf-8"),
+  fsp.readFile(archivePath, "utf-8").catch(() =>
+    console.log(`${archivePath} was not found. Creating new file`)
+  ),
 
-  console.log("completedTodos: ", completedTodos)
-  console.log("archivedTodos: ", archivedTodos)
-  // console.log("done: ", done)
-  // const json = files.map(yaml.safeLoad)
-  // console.log("json: ", json)
+]).then(([active, archived = ""]) => {
+  const newArchivedYaml = newArchive(archived, active)
+  fsp.writeFile(archivePath, newArchivedYaml, "utf-8")
+
+  return active
+
+}).then(active => {
+  // We don't want to overright your active todos until we know that archive
+  // succeeded.
+  const newActiveYaml = newActive(active)
+  fsp.writeFile(activePath, newActiveYaml, "utf-8")
+    .then(() => {
+      const activeName = path.basename(activePath)
+      const archiveName = path.basename(archivePath)
+      console.log(`Completed todos in ${activeName} written to ${archiveName}`)
+    })
+
 }).catch(err => {
-  console.error(`Could not read ${todoPath}`)
-  throw err
+  console.error(err)
 })
