@@ -22,22 +22,37 @@ Promise.all([
   ),
 
 ]).then(([active, archived = ""]) => {
+  // FIXME: I feel a bit dirty using an error for control flow. It would also
+  // be nice if the error was handled more nicely on printing in the final catch
+  if (!archivedCount(active)) {
+    throw new Error("There are no completed todos to archive!")
+  }
+
   const newArchivedYaml = newArchive(archived, active)
   fsp.writeFile(archivePath, newArchivedYaml, "utf-8")
 
   return active
 
 }).then(active => {
-  // We don't want to overright your active todos until we know that archive
-  // succeeded.
   const newActiveYaml = newActive(active)
   fsp.writeFile(activePath, newActiveYaml, "utf-8")
     .then(() => {
       const activeName = path.basename(activePath)
       const archiveName = path.basename(archivePath)
-      console.log(`Completed todos in ${activeName} written to ${archiveName}`)
+      const count = archivedCount(active)
+      const inflectedTodo = count === 1 ? "Todo" : "Todos"
+
+      console.log(
+        `${count} completed ${inflectedTodo} from ${activeName} written to ${archiveName}`
+      )
     })
 
 }).catch(err => {
   console.error(err)
 })
+
+const archivedCount = R.pipe(
+  R.match(/^\s*#\s.*[^:]$/mg),
+  R.length
+)
+
